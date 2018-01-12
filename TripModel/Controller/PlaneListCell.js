@@ -20,13 +20,19 @@ class PlaneListCell extends Component {
     constructor(props){
         super(props)
         flightinfo:''
+        clickFlightBlock:null
+
+        this.state={
+
+            showInfo:true
+        };
 
     }
     render(){
 
         return(
 
-            <TouchableOpacity style={styles.outViewStyle} onPress={()=>{this.clickCell(this.props.flightinfo)}}>
+            <TouchableOpacity style={styles.outViewStyle} onPress={()=>{this.clickCell()}}>
 
                 <View style={styles.cellViewStyle}>
 
@@ -53,6 +59,9 @@ class PlaneListCell extends Component {
                 </View>
 
             </TouchableOpacity>
+
+
+
         );
     }
     mealtype(flightinfo){
@@ -65,48 +74,53 @@ class PlaneListCell extends Component {
     }
 
     //点击列表
-    clickCell(flightinfo){
+    clickCell() {
 
-        // alert(flightinfo)
+
 
 
         var flightinfoUrl = 'http://a.tripg.com/QunarAir/GetFlightInfo?arr=CGQ&date=2018-01-15&flightNum=CA1609&dpt=PEK&TimeStamp=1515401989&Sign=600DCA44-D71A-41F1-9B73-EB3A560B3429&companyCode=919&NewKey=3a34fd02225ec9813e30489f0af71048'
 
+        var  self = this;
+        NetUitl.get(flightinfoUrl, function (responseText) {
 
-        NetUitl.get(flightinfoUrl, function (responseText)
-        {
+            var statusCode = responseText.statusCode;
+            var message = responseText.message;
+            var flightInfoModel = new Object();
 
-            var  statusCode = responseText.statusCode;
-            var  message = responseText.message;
-            var flightInfoModel = new  Object();
+            console.log('info返回数据responseText---' + responseText);
 
-            console.log('info返回数据responseText---'+responseText);
-
-            if (200 == statusCode)
-            {
+            if (200 == statusCode) {
                 var data = responseText.data;
-                if (data.length>0){
-                    for (var i=0 ;i<data.length;i++){
+                if (data.length > 0) {
+                    for (var i = 0; i < data.length; i++) {
                         flightInfoModel = data[i];
                         flightInfoArr.push(flightInfoModel);
                     }
-                }else {
+                    self.props.flightinfo.flightInfoArr = flightInfoArr;
+
+                    self.props.flightinfo.detail = '0';
+                    if (self.props.clickFlightBlock){
+
+                        self.props.clickFlightBlock();
+                    }
+
+                } else {
 
                     alert('暂无数据');
                 }
 
             }
-            else
-            {
+            else {
 
                 alert(message);
             }
-        }, function (error)
-        {
+        }, function (error) {
 
             alert(error);
 
-        })
+        });
+    }
 
 }
 const styles = StyleSheet.create({

@@ -24,6 +24,7 @@ import Loading from '../LoadingView/Loading'
 import HMUrlUtils from '../CommonTools/HMUrlUtils'
 import NetUitl from '../CommonTools/NetUitl'
 import tgUtil from '../CommonTools/tgUtil'
+import PlaneCabinView from './PlaneCabinView'
 var Dimensions = require('Dimensions');
 var {width, height} = Dimensions.get('window');
 var flightModelArr = [];
@@ -45,6 +46,8 @@ class PlaneHomeController extends BaseComponent {
             loadingBool:'true',
 
             dataSource: ds.cloneWithRows(flightModelArr),
+
+            reloadView: true
         }
 
 
@@ -70,15 +73,33 @@ class PlaneHomeController extends BaseComponent {
 
     renderFlightList(flightinfo){
         return(
-
+            <View>
           <PlaneListCell
               flightinfo ={flightinfo}
+              clickFlightBlock ={()=>{this.setState({reloadView:false});}}
           />
+                { this.infoView(flightinfo)}
+            </View>
 
         );
     }
 
+    infoView(flightinfo){
+        if (flightinfo.detail=='0'){
+            console.log('flightinfo.flightInfoArr.length'+flightinfo.flightInfoArr.length)
+           return(
 
+               <PlaneCabinView
+                flightinfo={flightinfo}
+               />
+
+           );
+        }else {
+
+            return null;
+        }
+
+    }
 
 
     getClass(){
@@ -119,7 +140,7 @@ class PlaneHomeController extends BaseComponent {
 
                  }
                  console.log('fligthinfoModelArr---'+flightModelArr);
-                 console.log('flightinfos1---'+flightinfos1);
+
                  self.setState({
                      dataSource: self.state.dataSource.cloneWithRows(flightModelArr),
                  });
@@ -140,7 +161,7 @@ class PlaneHomeController extends BaseComponent {
 
 
 
-    }
+
 }
 
 const styles = StyleSheet.create({
