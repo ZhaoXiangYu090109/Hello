@@ -30,14 +30,15 @@ import PlaneUrl from '../PlaneCommonFile/PlaneUrl'
 import Storage from '../CommonTools/DeviceStorage'
 var Dimensions = require('Dimensions');
 var {width, height} = Dimensions.get('window');
-var flightModelArr = [];
-var  flightinfoModel = null;
+
+
 class PlaneHomeController extends PlaneBaseViewController {
 
     constructor(props){
         super(props);
-        var flightinfos1=[];
 
+        flightModelArr = [];
+        flightinfoModel = null;
         var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
         this.state = {
@@ -81,8 +82,9 @@ class PlaneHomeController extends PlaneBaseViewController {
     }
 
     infoView(flightinfo){
-        if (flightinfo.detail=='0'){
 
+        if (flightinfo.detail=='0'){
+            console.log( 'zouzhelema ?')
            return(
 
                <PlaneCabinView
@@ -136,18 +138,18 @@ class PlaneHomeController extends PlaneBaseViewController {
                 console.log('返回数据Code---'+Code);
                 if (0 == Code)
                 {
-                    flightinfos1 = responseText.result.flightinfos;
-                    for (var i=0; i<flightinfos1.length; i++){
-                        flightinfoModel = flightinfos1[i];
-                        flightinfoModel.detail = '1';
-                        flightModelArr.push(flightinfoModel);
+                  let flightinfos1 = responseText.result.flightinfos;
+                  let tempflightinfoModel ;
+                  for (var i=0; i<flightinfos1.length; i++) {
+                      tempflightinfoModel = flightinfos1[i];
+                      tempflightinfoModel.detail = '1';
+                      flightModelArr.push(tempflightinfoModel);
+                  }
 
-                    }
-                    console.log('fligthinfoModelArr---'+flightModelArr);
 
-                    self.setState({
-                        dataSource: self.state.dataSource.cloneWithRows(flightModelArr),
-                    });
+                  self.setState({
+                      dataSource: self.state.dataSource.cloneWithRows(flightModelArr),
+                  });
 
                 }
                 else

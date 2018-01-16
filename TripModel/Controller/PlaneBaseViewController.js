@@ -66,23 +66,6 @@ export default class PlaneBaseViewController extends Component
         );
     }
 
-    MnavigatorBar(){
-        console.log('PlaneBaseViewController--render')
-        return(
-            <View style={{height:200,width:100,backgroundColor:'red', position: 'absolute',
-                top: 0,
-                left: 0,
-            }}>
-
-            </View>
-
-        );
-    }
-
-
-
-
-
 
 }
 const styles = StyleSheet.create({

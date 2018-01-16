@@ -35,13 +35,13 @@ class PlaneHomeController extends PlaneBaseViewController {
         PlaneBaseModel = {
             startCity:'长春',
             endCity:'北京',
-            startCityCode:'',
-            endCityCode:'',
+            startCityCode:'CGQ',
+            endCityCode:'PEK',
             routeType:'',
             startDate:'',
             endDate:'',
             tripType:'',
-        };
+        }
 
 
 

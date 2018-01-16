@@ -15,7 +15,7 @@ import NetUitl from "../CommonTools/NetUitl";
 var Dimensions = require('Dimensions');
 var {width, height} = Dimensions.get('window');
 
-var flightInfoArr = [];
+
 class PlaneListCell extends Component {
     constructor(props){
         super(props)
@@ -120,6 +120,7 @@ class PlaneListCell extends Component {
             if (200 == statusCode) {
                 var data = responseText.data;
                 if (data.length > 0) {
+                    var flightInfoArr = [];
                     for (var i = 0; i < data.length; i++) {
                         flightInfoModel = data[i];
                         flightInfoArr.push(flightInfoModel);
