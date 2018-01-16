@@ -25,20 +25,18 @@ import HMUrlUtils from '../CommonTools/HMUrlUtils'
 import NetUitl from '../CommonTools/NetUitl'
 import tgUtil from '../CommonTools/tgUtil'
 import PlaneCabinView from './PlaneCabinView'
+import PlaneBaseViewController from "./PlaneBaseViewController";
+import PlaneUrl from '../PlaneCommonFile/PlaneUrl'
+import Storage from '../CommonTools/DeviceStorage'
 var Dimensions = require('Dimensions');
 var {width, height} = Dimensions.get('window');
 var flightModelArr = [];
 var  flightinfoModel = null;
-class PlaneHomeController extends BaseComponent {
-    popToLast()
-    {
-        this.props.navigator.pop();
-    }
+class PlaneHomeController extends PlaneBaseViewController {
+
     constructor(props){
         super(props);
         var flightinfos1=[];
-
-
 
         var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
@@ -55,10 +53,8 @@ class PlaneHomeController extends BaseComponent {
     render() {
         return (
             <View style={styles.container} >
-                <HMNavigatorBar
-                    title={'机票列表'}
-                    popToLast={() => this.popToLast()}>
-                </HMNavigatorBar>
+
+                {this.PlaneListNavigtorBar()}
                 <ListView
                     dataSource = {this.state.dataSource}
                     renderRow = {
@@ -86,7 +82,7 @@ class PlaneHomeController extends BaseComponent {
 
     infoView(flightinfo){
         if (flightinfo.detail=='0'){
-            console.log('flightinfo.flightInfoArr.length'+flightinfo.flightInfoArr.length)
+
            return(
 
                <PlaneCabinView
@@ -118,45 +114,58 @@ class PlaneHomeController extends BaseComponent {
     {
 
 
-      var  tempUrl =  `http://a.tripg.com/QunarAir/GetFlightList?channel=tripg&price=1380&arr=PEK&date=2018-01-15&companyCode=919&dpt=CGQ&TimeStamp=1513071274&Sign=600DCA44-D71A-41F1-9B73-EB3A560B3429&carrier=CA&NewKey=e2032cf4b9f9be5d20b8e3a24e6c63f4`
 
-        console.log('机票列表tempUrl-------'+tempUrl);
-         var self = this;
-         NetUitl.get(tempUrl, function (responseText)
-         {
-             self.setState({ loadingBool:'flase'});
+        Storage.get('userInfo').then((userInfo)=>{
 
-             var Code = responseText.code;
-             var Message = responseText.Message;
 
-             console.log('返回数据Code---'+Code);
-             if (0 == Code)
-             {
-                 flightinfos1 = responseText.result.flightinfos;
-                 for (var i=0; i<flightinfos1.length; i++){
-                     flightinfoModel = flightinfos1[i];
-                     flightinfoModel.detail = '1';
-                     flightModelArr.push(flightinfoModel);
+            // var  tempUrl =  `http://a.tripg.com/QunarAir/GetFlightList?channel=tripg&price=1380&arr=PEK&date=2018-01-20
+            // &companyCode=919&dpt=CGQ&TimeStamp=1513071274&Sign=600DCA44-D71A-41F1-9B73-EB3A560B3429&carrier=CA&NewKey=e2032cf4b9f9be5d20b8e3a24e6c63f4`
+          let  tempUrl  = `${PlaneUrl.PlaneListUrl}&channel=tripg&price=1380&arr=PEK&date=2018-01-20&companyCode=${userInfo.Id}&dpt=CGQ&TimeStamp=1513071274&carrier=CA`;
 
-                 }
-                 console.log('fligthinfoModelArr---'+flightModelArr);
 
-                 self.setState({
-                     dataSource: self.state.dataSource.cloneWithRows(flightModelArr),
-                 });
 
-             }
-             else
-             {
+            console.log('机票列表tempUrl-------'+tempUrl);
+            var self = this;
+            NetUitl.get(tempUrl, function (responseText)
+            {
+                self.setState({ loadingBool:'flase'});
 
-                 alert('请求失败');
-             }
-         }, function (error)
-         {
-             self.setState({ loadingBool:'flase'});
-             alert(error);
+                var Code = responseText.code;
+                var Message = responseText.Message;
 
-         })
+                console.log('返回数据Code---'+Code);
+                if (0 == Code)
+                {
+                    flightinfos1 = responseText.result.flightinfos;
+                    for (var i=0; i<flightinfos1.length; i++){
+                        flightinfoModel = flightinfos1[i];
+                        flightinfoModel.detail = '1';
+                        flightModelArr.push(flightinfoModel);
+
+                    }
+                    console.log('fligthinfoModelArr---'+flightModelArr);
+
+                    self.setState({
+                        dataSource: self.state.dataSource.cloneWithRows(flightModelArr),
+                    });
+
+                }
+                else
+                {
+
+                    alert('请求失败');
+                }
+            }, function (error)
+            {
+                self.setState({ loadingBool:'flase'});
+                alert(error);
+
+            })
+
+
+        });
+
+
     }
 
 

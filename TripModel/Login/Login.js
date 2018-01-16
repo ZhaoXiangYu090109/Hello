@@ -26,10 +26,12 @@ import tgUtil from '../CommonTools/tgUtil'
 import Loading from '../LoadingView/Loading'
 import PlaneHome from '../Controller/PlaneHomeController'
 import PlaneTest from '../Controller/PlaneHomeTest'
+import PlaneBaseViewController  from '../Controller/PlaneBaseViewController'
+import Storage from '../CommonTools/DeviceStorage'
 var Dimensions = require('Dimensions');
 var {width, height} = Dimensions.get('window');
 
-class  Login extends BaseComponent{
+class  Login extends PlaneBaseViewController{
 
 
     constructor(props){
@@ -110,79 +112,77 @@ class  Login extends BaseComponent{
 
     loginFunction(){
 
-        this.props.navigator.push(
+        // this.props.navigator.push(
+        //
+        //     {
+        //         titleName:'机票',
+        //         component:PlaneHome,
+        //     }
+        // );
 
+        this.setState({ loadingBool:'true'});
+
+
+
+
+
+
+
+
+
+
+       var  LoginuserName = this.state.userName;
+       var  Loginpassword = this.state.passWord;
+       var  timers  =Date.parse(new Date());
+       timers = (timers / 1000);
+       var passmd5String = CryptoJS.MD5(Loginpassword).toString();
+       var passMd5 = LoginuserName + parseInt(timers / 60) + passmd5String;
+       passMd5 = CryptoJS.MD5(passMd5);
+       var parmData = {
+            TimeStamp: timers + '',
+            Sign: LogoSign,
+            cmd: 'UserCheck',
+            UserName: LoginuserName,
+            PasswordKey: passMd5
+       };
+       console.log('parmData---'+parmData);
+       var urlData = tgUtil.tgParmsToUrl(parmData);
+        console.log('urlData---'+urlData);
+       urlData += tgUtil.tgGetNewKeyStr(urlData, LogoKey);
+        console.log('urlData1---'+urlData);
+       var tempUrl = `${HMUrlUtils.CusomterUrl}?${urlData}`;
+       console.log(tempUrl);
+        var self = this;
+        NetUitl.get(tempUrl, function (responseText)
+        {
+            self.setState({ loadingBool:'flase'});
+            var Code = responseText.Code;
+            var Message = responseText.Message;
+            console.log(responseText);
+            if (0 == Code)
             {
-                titleName:'机票',
-                component:PlaneHome,
-            }
-        );
+                Storage.save('userInfo', responseText.Datas)
+                self.props.navigator.push(
 
-       //  this.setState({ loadingBool:'true'});
-       //
-       //
-       //
-       //
-       //
-       //
-       //
-       //
-       //
-       //
-       // var  LoginuserName = this.state.userName;
-       // var  Loginpassword = this.state.passWord;
-       // var  timers  =Date.parse(new Date());
-       // timers = (timers / 1000);
-       // var passmd5String = CryptoJS.MD5(Loginpassword).toString();
-       // var passMd5 = LoginuserName + parseInt(timers / 60) + passmd5String;
-       // passMd5 = CryptoJS.MD5(passMd5);
-       // var parmData = {
-       //      TimeStamp: timers + '',
-       //      Sign: LogoSign,
-       //      cmd: 'UserCheck',
-       //      UserName: LoginuserName,
-       //      PasswordKey: passMd5
-       // };
-       // console.log('parmData---'+parmData);
-       // var urlData = tgUtil.tgParmsToUrl(parmData);
-       //  console.log('urlData---'+urlData);
-       // urlData += tgUtil.tgGetNewKeyStr(urlData, LogoKey);
-       //  console.log('urlData1---'+urlData);
-       // var tempUrl = `${HMUrlUtils.CusomterUrl}?${urlData}`;
-       // console.log(tempUrl);
-       //  var self = this;
-       //  NetUitl.get(tempUrl, function (responseText)
-       //  {
-       //      self.setState({ loadingBool:'flase'});
-       //      var Code = responseText.Code;
-       //      var Message = responseText.Message;
-       //      console.log(responseText);
-       //      if (0 == Code)
-       //      {
-       //          // Storage.save('userInfo', responseText.Datas)
-       //
-       //
-       //          self.props.navigator.push(
-       //
-       //             {
-       //                 titleName:'机票', 
-       //                 component:PlaneHome,
-       //             }
-       //         );
-       //
-       //
-       //      }
-       //      else
-       //      {
-       //
-       //          alert('失败1');
-       //      }
-       //  }, function (error)
-       //  {
-       //      self.setState({ loadingBool:'flase'});
-       //      alert(error);
-       //
-       //  })
+                   {
+                       titleName:'机票',
+                       component:PlaneHome,
+                   }
+               );
+
+
+            }
+            else
+            {
+
+                alert('失败1');
+            }
+        }, function (error)
+        {
+            self.setState({ loadingBool:'flase'});
+            alert(error);
+
+        })
 
     }
 

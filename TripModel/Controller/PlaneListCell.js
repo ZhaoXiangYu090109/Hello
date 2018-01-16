@@ -75,11 +75,38 @@ class PlaneListCell extends Component {
 
     //点击列表
     clickCell() {
+        console.log('this.props.flightinfo.detail'+this.props.flightinfo.detail);
+
+        if (this.props.flightinfo.detail=='1'){
+            if (this.props.flightinfo.flightInfoArr!==undefined){
+                this.props.flightinfo.detail = '0';
+                if (this.props.clickFlightBlock){
+                    this.props.clickFlightBlock();
+                }
+            }else {
+              this.fetchCellInfo();
+            }
+        }else {
+
+            if (this.props.flightinfo.flightInfoArr.length>0){
+                this.props.flightinfo.detail = '1';
+                if (this.props.clickFlightBlock){
+                    this.props.clickFlightBlock();
+                }
+            }else {
+                this.fetchCellInfo();
+            }
+
+        }
+    }
 
 
 
 
-        var flightinfoUrl = 'http://a.tripg.com/QunarAir/GetFlightInfo?arr=CGQ&date=2018-01-15&flightNum=CA1609&dpt=PEK&TimeStamp=1515401989&Sign=600DCA44-D71A-41F1-9B73-EB3A560B3429&companyCode=919&NewKey=3a34fd02225ec9813e30489f0af71048'
+    fetchCellInfo(){
+
+
+        var flightinfoUrl = 'http://a.tripg.com/QunarAir/GetFlightInfo?arr=CGQ&date=2018-01-20&flightNum=CA1609&dpt=PEK&TimeStamp=1515401989&Sign=600DCA44-D71A-41F1-9B73-EB3A560B3429&companyCode=919&NewKey=3a34fd02225ec9813e30489f0af71048'
 
         var  self = this;
         NetUitl.get(flightinfoUrl, function (responseText) {
@@ -88,7 +115,7 @@ class PlaneListCell extends Component {
             var message = responseText.message;
             var flightInfoModel = new Object();
 
-            console.log('info返回数据responseText---' + responseText);
+
 
             if (200 == statusCode) {
                 var data = responseText.data;
@@ -120,6 +147,7 @@ class PlaneListCell extends Component {
             alert(error);
 
         });
+
     }
 
 }

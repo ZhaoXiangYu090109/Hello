@@ -83,6 +83,7 @@ export default class TripGroup extends Component
 
 const styles = StyleSheet.create({
     container: {
+
         flexDirection: 'row',
         height: 44,
         alignItems: 'center',

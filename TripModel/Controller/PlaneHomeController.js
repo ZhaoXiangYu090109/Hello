@@ -22,18 +22,29 @@ import BaseComponent from "../Main/BaseComponent";
 import HMNavigatorBar from '../Main/HMNavigatorBar'
 import  PlaneListView from './PlaneListView'
 import  CalendarView from './CalendarView'
+import PlaneBaseViewController  from '../Controller/PlaneBaseViewController'
+import  ViewLayout from './ViewLayout'
 var changed = true;
 var travelType = true;
 
 var textEdge= 50;
-class PlaneHomeController extends BaseComponent {
-    popToLast()
-    {
-        this.props.navigator.pop();
-    }
+class PlaneHomeController extends PlaneBaseViewController {
 
     constructor(props) {
         super(props);
+        PlaneBaseModel = {
+            startCity:'长春',
+            endCity:'北京',
+            startCityCode:'',
+            endCityCode:'',
+            routeType:'',
+            startDate:'',
+            endDate:'',
+            tripType:'',
+        };
+
+
+
 
         this.state = {//设置初值
             changedState:true,
@@ -59,7 +70,10 @@ class PlaneHomeController extends BaseComponent {
             inputRange: [0, 1],
             outputRange: [!this.state.is_oneWay?0:width*0.5,!this.state.is_oneWay?width*0.5:0]
         })
+
+
         return (
+
             <View style={styles.container}>
                 <HMNavigatorBar
                     title={'国内机票'}
@@ -84,7 +98,17 @@ class PlaneHomeController extends BaseComponent {
                 {/*城市选择*/}
 
                 <View style={styles.citySelectCellStyle}>
-                    <Animated.Text style={[styles.cityTextStyles,{  position:'absolute',left:changed?10:absoluteLeft,top:12  }]}>长春</Animated.Text>
+                    <Animated.Text
+                        ref="ref_test"
+                        style={[styles.cityTextStyles,{  position:'absolute',left:changed?10:absoluteLeft,top:12 }]}
+                        onLayout={ViewLayout._onLayout
+                        }
+                    >
+                        长春
+                    </Animated.Text>
+
+
+
                     <Animated.Text style={[styles.cityTextStyles,{ position:'absolute',left:changed?width- textEdge:absoluteRight,top:12}]}>北京</Animated.Text>
                     <TouchableOpacity
                         onPress={()=>{this.LeftAction()}}
